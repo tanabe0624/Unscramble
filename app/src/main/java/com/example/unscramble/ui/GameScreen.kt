@@ -81,9 +81,10 @@ fun GameScreen(
         )
         GameLayout(
             onUserGuessChanged = {gameViewModel.updateUserGuess(it)},
-            onKeyboardDone = { },
+            onKeyboardDone = { gameViewModel.checkUserGuess() },
             currentScrambledWord = gameUiState.currentScrambleWord,
             userGuess = gameViewModel.userGuess,
+            isGuessWrong = gameUiState.isGuessedWordWrong,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -99,7 +100,7 @@ fun GameScreen(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { }
+                onClick = { gameViewModel.checkUserGuess() }
             ) {
                 Text(
                     text = stringResource(R.string.submit),
@@ -141,7 +142,9 @@ fun GameLayout(
     onKeyboardDone: () -> Unit,
     currentScrambledWord: String,
     userGuess: String,
-    modifier: Modifier = Modifier) {
+    isGuessWrong: Boolean,
+    modifier: Modifier = Modifier)
+{
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
 
     Card(
@@ -183,14 +186,21 @@ fun GameLayout(
                     disabledContainerColor = colorScheme.surface,
                 ),
                 onValueChange = onUserGuessChanged,
-                label = { Text(stringResource(R.string.enter_your_word)) },
-                isError = false,
+                label = {
+                    if(isGuessWrong) {
+                        Text(stringResource(R.string.wrong_guess))
+                    }else{
+                        Text(stringResource(R.string.enter_your_word))
+                    }
+                },
+                isError = isGuessWrong,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = { onKeyboardDone() }
                 )
+
             )
         }
     }
