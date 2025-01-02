@@ -45,7 +45,7 @@ class GameViewModel: ViewModel() {
     }
 
     fun checkUserGuess(){
-        if(userGuess.equals(currentWord, ignoreCase = false)){
+        if(userGuess.equals(currentWord, ignoreCase = false)){ //ignoreCaseは大文字小文字を区別するかどうか。
             val updatedScore = _uiState.value.score.plus(SCORE_INCREASE)
             updateGameState(updatedScore)
         }
